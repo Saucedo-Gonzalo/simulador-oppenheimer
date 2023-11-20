@@ -159,14 +159,18 @@ def asignacion_a_memoria(
     ejecutar,
     interrumpir,
 ):
+     # Listas auxiliares para procesos listos y suspendidos
     aux_listos = []
     aux_suspendidos = []
     aux = []
+
+    # Verificación de procesos suspendidos en la cola de listos y su tiempo de arribo
     for p in cola_listos:
         if p.estado == "Suspendido" and p.tiempo_arribo <= reloj:
             aux.append(p)
         continue
 
+        # Asignación de procesos suspendidos a particiones de memoria
     for p in aux:
         for particion in memoria_principal.particiones:
             if particion.proceso is None:
@@ -175,7 +179,7 @@ def asignacion_a_memoria(
                     aux_suspendidos.append(p)
                     break
 
-#Multiprogramación
+# Multiprogramación: Asignación de procesos nuevos a particiones de memoria
     while (
         (len(cola_nuevos) > 0)
         and (cola_nuevos[0].tiempo_arribo <= reloj)
@@ -188,11 +192,13 @@ def asignacion_a_memoria(
                     setear(proceso, particion)
                     aux_listos.append(proceso)
                     break
-
+    # Cambio de estado a "Suspendido" si la partición no se asigna
         if proceso.particion is None:
             proceso.estado = "Suspendido"
 
         cola_listos.append(proceso)
+
+        # Mostrar información si no está en modo ejecución
 
     if not ejecutar:
         if len(aux_listos) > 0 or len(aux_suspendidos) > 0:
@@ -213,10 +219,14 @@ def asignacion_a_memoria(
                 cola_nuevos, cola_listos, cola_finalizados, memoria_principal
             )
 
+  # Limpiar listas auxiliares
     aux_listos = []
     aux_suspendidos = []
 
+
+# Función principal que simula la ejecución de procesos
 def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
+    # Inicialización de variables y estructuras de datos
     memoria_principal = BloqueMemoria(
         [BloqueParticion(100), BloqueParticion(
             60), BloqueParticion(120), BloqueParticion(250)]
@@ -228,6 +238,7 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
     cola_finalizados: list[BloqueProceso] = []
     procesador_libre = True
 
+     # Impresión de datos ingresados y tabla de nuevos procesos
     print(f"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<DATOS INGRESADOS>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n ")
     tabla_inicio(
         "Nuevos Procesos",
@@ -237,10 +248,13 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
     )
     print(f"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
+    # Esperar hasta que llegue el primer proceso
     while reloj != cola_nuevos[0].tiempo_arribo:
         reloj += 1
 
+      # Bucle principal de simulación
     while True:
+        # Lógica de asignación de memoria y gestión de procesos
         asignacion_a_memoria(
             cola_nuevos,
             cola_listos,
@@ -252,18 +266,22 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
             interrumpir,
         )
 
+     # Restaurar el quantum si el procesador está libre
         if procesador_libre:
             quantum = 2
 
         '''
         '''
+        # Si no hay procesos en cola de listos, avanzar el reloj
         if len(cola_listos) == 0:
             reloj += 1
             continue
 
+            # Obtener el primer proceso en cola de listos
         proceso = cola_listos[0]
         proceso.estado = "Ejecutando"
 
+    # Mostrar información si está en modo ejecución
         if ejecutar:
             input(
                 ">>>Presione Enter para continuar o CTRL+C para terminar la ejecución.\n"
@@ -275,6 +293,8 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
                 cola_nuevos, cola_listos, cola_finalizados, memoria_principal
             )
 
+
+    # Mostrar información si no está en modo ejecución y hay cambio de proceso
         if not ejecutar:
             if proceso.id != aux:
                 input(
@@ -289,15 +309,19 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
                 )
 
             aux = proceso.id
-
+    # Avanzar el reloj y decrementar el tiempo de irrupción del proceso actual
         reloj += 1
         proceso.tiempo_irrupcion -= 1
 
+    # Incrementar el tiempo de espera de los procesos en cola de listos
         for p in cola_listos[1:]:
             if p.estado == "Listo":
                 p.tiempo_espera += 1
 
+    # Marcar el procesador como ocupado
         procesador_libre = False
+
+         # Verificar si el proceso actual ha finalizado
 
         if proceso.tiempo_irrupcion == 0:
             proceso.estado = "Finalizado"
@@ -309,6 +333,7 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
 
             proceso = deepcopy(proceso)
             proceso.tiempo_irrupcion = proceso.resguardo_tiempo_irrupcion
+            # Agregar el proceso finalizado a la cola correspondiente y marcar el procesador como libre
             cola_finalizados.append(proceso)
             procesador_libre = True
             cola_listos.pop(0)
@@ -325,6 +350,7 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
                     cola_nuevos, cola_listos, cola_finalizados, memoria_principal
                 )
 
+         # Finalizar la simulación si no hay procesos en cola de listos ni en cola de nuevos
             if len(cola_listos) == 0 and len(cola_nuevos) == 0:
                 break
         else:
@@ -333,6 +359,7 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
             if quantum != 0:
                 continue
 
+                # Si el quantum llega a cero, gestionar cambios en la cola de listos
             if len(cola_listos) != 1:
                 proceso.estado = "Listo"
                 cola_listos.append(cola_listos.pop(0))
@@ -347,12 +374,14 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
                 min_frag = 999
                 min_particion = memoria_principal.particiones[0]
 
+                # Encontrar la partición con la menor fragmentación interna para el proceso suspendido
                 for particion in memoria_principal.particiones:
                     frag_generada = particion.tamanio - proceso.tamanio
                     if min_frag >= frag_generada and frag_generada >= 0:
                         min_frag = frag_generada
                         min_particion = particion
 
+                # Realizar operaciones de Swap-In y Swap-Out si es necesario
                 if (p := min_particion.proceso) is not None:
                     p.estado = "Suspendido"
                     resg_id = p.id
