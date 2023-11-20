@@ -5,13 +5,11 @@ from prettytable import PrettyTable
 from copy import deepcopy
 
 
-
 class BloqueParticion:
     def __init__(self, tamanio: int):
         self.tamanio = tamanio
         self.fragmentacion_interna = 0
         self.proceso: BloqueProceso | None = None
-
 
 class BloqueProceso:
     def __init__(self, arreglo: list[int]):
@@ -38,10 +36,6 @@ class BloqueMemoria:
     def __init__(self, distribucion_memoria: list):
         self.particiones: list[BloqueParticion] = distribucion_memoria[1:]
 
-def obtener_tiempo_arribo(proceso: BloqueProceso) -> int:
-    return proceso.tiempo_arribo
-
-
 def leer_archivo(origen: Path, tamano: int) -> list[BloqueProceso]:
     datos = leer_datos(origen)
     resultado = []
@@ -67,60 +61,8 @@ def leer_archivo(origen: Path, tamano: int) -> list[BloqueProceso]:
 
     return resultado
 
-
-def informe_estadistico(
-    cola_finalizados: list[BloqueProceso],
-):
-    encabezado_informe = [
-        "ID",
-        "RESPUESTA",
-        "ESPERA",
-        "RETORNO",
-    ]
-
-    encabezado_promedios = [
-        "RESPUESTA",
-        "ESPERA",
-        "RETORNO",
-    ]
-
-    tabla_estadisticas = PrettyTable()
-    tabla_estadisticas.field_names = encabezado_informe
-    for proceso in cola_finalizados:
-        tiempo_respuesta = proceso.instante_salida - proceso.tiempo_arribo
-        tiempo_retorno = proceso.resguardo_tiempo_irrupcion + proceso.tiempo_espera
-        tiempo_espera = proceso.tiempo_espera
-
-        tabla_estadisticas.add_row([
-            str(proceso.id),
-            str(tiempo_respuesta),
-            str(tiempo_espera),
-            str(tiempo_retorno),
-        ])
-
-    tabla_promedios = PrettyTable()
-    tabla_promedios.field_names = encabezado_promedios
-
-    acumulador_tiempo_respuesta = 0
-    acumulador_tiempo_retorno = 0
-    acumulador_tiempo_espera = 0
-
-    for proceso in cola_finalizados:
-        acumulador_tiempo_respuesta += proceso.instante_salida - proceso.tiempo_arribo
-        acumulador_tiempo_retorno += proceso.resguardo_tiempo_irrupcion + proceso.tiempo_espera
-        acumulador_tiempo_espera += proceso.tiempo_espera
-
-    total= len(cola_finalizados)
-
-    tabla_promedios.add_row([
-        str(round((acumulador_tiempo_respuesta / total), 2)),
-        str(round((acumulador_tiempo_espera / total), 2)),
-        str(round((acumulador_tiempo_retorno / total), 2)),
-    ])
-
-    print(f"-->PROMEDIOS\n{tabla_promedios}\n")
-    print(f"-->RESUMEN DE BLOQUES DE PROCESOS\n{tabla_estadisticas}\n")
-
+def obtener_tiempo_arribo(proceso: BloqueProceso) -> int:
+    return proceso.tiempo_arribo
 
 def agregar_filas_memoria(tabla, particiones):
     memoria_encabezado = [
@@ -200,10 +142,6 @@ def mostrar_estado(
 
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-
-
-
-
 def setear(proceso: BloqueProceso, particion: BloqueParticion):
     proceso.estado = "Listo"
     particion.proceso = proceso
@@ -237,6 +175,7 @@ def asignacion_a_memoria(
                     aux_suspendidos.append(p)
                     break
 
+#Multiprogramación
     while (
         (len(cola_nuevos) > 0)
         and (cola_nuevos[0].tiempo_arribo <= reloj)
@@ -276,7 +215,6 @@ def asignacion_a_memoria(
 
     aux_listos = []
     aux_suspendidos = []
-
 
 def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
     memoria_principal = BloqueMemoria(
@@ -318,8 +256,6 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
             quantum = 2
 
         '''
-            Esto debido a que si tengo procesos con tiempos de arribo con una diferencia más grande que quantum,
-            la cola de listos estará vacía por un periodo largo e Indexar lista vacía es un error.
         '''
         if len(cola_listos) == 0:
             reloj += 1
@@ -458,3 +394,56 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
     informe_estadistico(cola_finalizados)
     print(
         f"\n\n*Tiempo utilizado: {reloj} unidades de tiempo\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>FIN DEL SIMULADOR>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+def informe_estadistico(
+    cola_finalizados: list[BloqueProceso],
+):
+    encabezado_informe = [
+        "ID",
+        "RESPUESTA",
+        "ESPERA",
+        "RETORNO",
+    ]
+
+    encabezado_promedios = [
+        "RESPUESTA",
+        "ESPERA",
+        "RETORNO",
+    ]
+
+    tabla_estadisticas = PrettyTable()
+    tabla_estadisticas.field_names = encabezado_informe
+    for proceso in cola_finalizados:
+        tiempo_respuesta = proceso.instante_salida - proceso.tiempo_arribo
+        tiempo_retorno = proceso.resguardo_tiempo_irrupcion + proceso.tiempo_espera
+        tiempo_espera = proceso.tiempo_espera
+
+        tabla_estadisticas.add_row([
+            str(proceso.id),
+            str(tiempo_respuesta),
+            str(tiempo_espera),
+            str(tiempo_retorno),
+        ])
+
+    tabla_promedios = PrettyTable()
+    tabla_promedios.field_names = encabezado_promedios
+
+    acumulador_tiempo_respuesta = 0
+    acumulador_tiempo_retorno = 0
+    acumulador_tiempo_espera = 0
+
+    for proceso in cola_finalizados:
+        acumulador_tiempo_respuesta += proceso.instante_salida - proceso.tiempo_arribo
+        acumulador_tiempo_retorno += proceso.resguardo_tiempo_irrupcion + proceso.tiempo_espera
+        acumulador_tiempo_espera += proceso.tiempo_espera
+
+    total= len(cola_finalizados)
+
+    tabla_promedios.add_row([
+        str(round((acumulador_tiempo_respuesta / total), 2)),
+        str(round((acumulador_tiempo_espera / total), 2)),
+        str(round((acumulador_tiempo_retorno / total), 2)),
+    ])
+
+    print(f"-->PROMEDIOS\n{tabla_promedios}\n")
+    print(f"-->RESUMEN DE BLOQUES DE PROCESOS\n{tabla_estadisticas}\n")

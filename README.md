@@ -55,15 +55,9 @@ Modelamos el siguiente diagrama de flujo para nuestro programa:
 ![Diagrama de Flujo TPI](https://raw.githubusercontent.com/Saucedo-Gonzalo/simulador-oppenheimer/master/docs/DiagFlujo.png)
 
 ## Desarrollo
-Se decidio separar el código en 6 archivos para proporcionar un desarrollo más modular del simulador:
+Se decidio separar el código en 5 archivos para proporcionar un desarrollo más modular del simulador:
 
-- ###  **[inicializacion.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/Inicializacion.py)**
-Este archivo contiene la implementación de las clases relacionadas con la simulación, como Proceso, Particion, Procesador, y Memoria. También define funciones para cargar procesos desde un archivo CSV, gestionar la memoria, y realizar la simulación.
 
-- Clase Proceso: Representa un proceso con atributos como id, tiempo de irrupción, tiempo de arribo y tamaño.
-- Clase Particion: Representa una partición de memoria con atributos como id, tamaño, estado, dirección, proceso asignado y fragmentación interna.
-- Clase Procesador: Representa el procesador con atributos como partición, proceso y tiempo restante.
-- Clase Memoria: Representa la memoria y contiene listas para diferentes colas de procesos, así como métodos para cargar particiones, procesos, y realizar la simulación.
 
 - ###  **[lector.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/lector.py)**
 Este archivo contiene funciones para leer datos desde archivos. Soporta archivos CSV y JSON. La función leer_datos decide qué tipo de archivo es y llama a la función correspondiente (csv_reader o json_reader) para procesar y devolver los datos en un formato consistente.
@@ -78,7 +72,8 @@ Este archivo contiene una interfaz gráfica básica creada con la biblioteca Tki
 En este archivo se encuentra una serie de funciones para validar diferentes tipos de entrada, como tamaños de archivos y números positivos.
 
 - ###  **[codigo.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/codigo.py)**
-Este archivo contiene la lógica principal de la simulación. Define clases como BloqueParticion, BloqueProceso, y BloqueMemoria, que se utilizan para representar particiones de memoria, procesos y la memoria principal, respectivamente. También incluye funciones para leer datos desde un archivo, generar tablas, mostrar el estado del sistema y ejecutar la simulación.
+Este archivo contiene la lógica principal de la simulación. Define clases como BloqueParticion, BloqueProceso, y BloqueMemoria, que se utilizan para representar particiones de memoria, procesos y la memoria principal, respectivamente. 
+También incluye funciones para leer datos desde un archivo, generar tablas, mostrar el estado del sistema y ejecutar la simulación.
 
 La simulación en Run se basa en un algoritmo de planificación Round-Robin con un quantum de tiempo definido. Muestra el estado del sistema en cada paso, incluyendo información sobre la memoria, colas de procesos y procesos finalizados. Al final de la simulación, se genera un informe estadístico con tiempos de retorno y espera para cada proceso, así como los tiempos promedios.
 
