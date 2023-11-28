@@ -1,10 +1,10 @@
-# importarciones
+# importaciones
 from lector import leer_datos
 from pathlib import Path
 from prettytable import PrettyTable
 from copy import deepcopy
 
-
+# Definición de clases
 class BloqueParticion:
     def __init__(self, tamanio: int):
         self.tamanio = tamanio
@@ -36,6 +36,7 @@ class BloqueMemoria:
     def __init__(self, distribucion_memoria: list):
         self.particiones: list[BloqueParticion] = distribucion_memoria[1:]
 
+#Funciones auxiliares
 def leer_archivo(origen: Path, tamano: int) -> list[BloqueProceso]:
     datos = leer_datos(origen)
     resultado = []
@@ -64,6 +65,8 @@ def leer_archivo(origen: Path, tamano: int) -> list[BloqueProceso]:
 def obtener_tiempo_arribo(proceso: BloqueProceso) -> int:
     return proceso.tiempo_arribo
 
+
+# Funciones de tabla y generación de datos
 def agregar_filas_memoria(tabla, particiones):
     memoria_encabezado = [
         "ID", "Dirección", "Tamaño Partición(KB)", "Tamaño Proceso(KB)", "Frag. Interna(KB)"]
@@ -113,8 +116,9 @@ def generar_tabla(datos, title):
         agregar_filas_procesos(tabla, datos)
 
     return tabla
+ 
 
-
+# Muestra el estado actual del sistema, incluyendo la memoria y las colas de procesos
 def mostrar_estado(
     cola_nuevos: list[BloqueProceso],
     cola_listos: list[BloqueProceso],
@@ -141,7 +145,9 @@ def mostrar_estado(
         print(tabla_finalizados)
 
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  
 
+# Asigna un proceso a una partición y actualiza información relacionada
 def setear(proceso: BloqueProceso, particion: BloqueParticion):
     proceso.estado = "Listo"
     particion.proceso = proceso
@@ -424,6 +430,8 @@ def Run(cola_nuevos: list[BloqueProceso], ejecutar, interrumpir):
     print(
         f"\n\n*Tiempo utilizado: {reloj} unidades de tiempo\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>FIN DEL SIMULADOR>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
+
+# Mostrar informe
 def informe_estadistico(
     cola_finalizados: list[BloqueProceso],
 ):
