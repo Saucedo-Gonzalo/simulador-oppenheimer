@@ -81,7 +81,7 @@ La simulación en Run se basa en un algoritmo de planificación Round-Robin con 
 
 Para ejecutar el simulador, se debe acceder a través de un archivo ejecutable, que se encuentra en la carpeta /ejecutable, cuyo nombre es "SimuladorOppenheimer.exe"
 
-![Ejecutable](https://raw.githubusercontent.com/Saucedo-Gonzalo/simulador-oppenheimer/master/screenshots/0.PNG)
+![Ejecutable](https://raw.githubusercontent.com/Saucedo-Gonzalo/simulador-oppenheimer/master/screenshots/7.PNG)
 
 
 - **💻[Ejecutable](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/tree/main/ejecutable)**
