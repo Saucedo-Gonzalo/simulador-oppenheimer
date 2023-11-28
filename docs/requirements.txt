@@ -12,3 +12,4 @@ readchar==4.0.5
 rich==13.6.0
 six==1.16.0
 wcwidth==0.2.9
+prettytable

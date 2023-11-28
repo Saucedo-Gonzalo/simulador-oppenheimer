@@ -8,26 +8,6 @@ from codigo import BloqueProceso, leer_archivo
 def clear_screen():
     os.system("tput reset")
 
-
-def validar_positivo(answers, current):
-    try:
-        if int(current) >= 0:
-            return True
-    except:
-        raise errors.ValidationError(
-            "", reason="El valor ingresado no es un número positivo."
-        )
-
-def validar_mayor_a_cero(answers, current):
-    try:
-        if int(current) > 0:
-            return True
-    except:
-        raise errors.ValidationError(
-            "", reason="El valor ingresado no debe ser menor o igual a cero."
-        )
-
-
 def validar_tamaño(answers, current):
     try:
         if int(current) >= 0 and int(current) <= 250:
@@ -38,15 +18,16 @@ def validar_tamaño(answers, current):
         )
 
 
+
 def validar_carga(answers, current):
     try:
         if int(current) <= 10 and int(current) > 0:
             return True
     except:
         raise errors.ValidationError(
-            "", reason="La cantidad de proceso no debe ser mayor a 10."
+            "", reason="La cantidad de procesos no debe ser mayor a 10."
         )
-
+    
 
 def validar_path(answers, current):
     file_path = Path(PurePath(current))
@@ -54,7 +35,7 @@ def validar_path(answers, current):
     if not Path.exists(file_path):
         raise errors.ValidationError(
             "",
-            reason=f"Ha ocurrido un error abriendo '{file_path}', no existe o no ha podido ser encontrado.",
+            reason=f"El archivo '{file_path}', no existe o no ha podido ser encontrado.",
         )
 
     if Path.is_dir(file_path):
@@ -62,30 +43,49 @@ def validar_path(answers, current):
 
     if file_path.suffix != ".csv" and file_path.suffix != ".json":
         raise errors.ValidationError(
-            "", reason="El archivo de entrada debe ser '.csv' o '.json'."
+            "", reason="El formato del archivo debe ser '.csv' o '.json'."
         )
 
     return True
+
+
+def validar_positivo(answers, current):
+    try:
+        if int(current) >= 0:
+            return True
+    except:
+        raise errors.ValidationError(
+            "", reason="Algún valor no es un número positivo."
+        )
+
+def validar_mayor_a_cero(answers, current):
+    try:
+        if int(current) > 0:
+            return True
+    except:
+        raise errors.ValidationError(
+            "", reason="Algún valor es menor o igual a cero."
+        )
 
 
 def Prompt(ejecutar, interrumpir):
     preguntas = [
         inquirer.List(
             name="opción",
-            message="Cargar",
-            choices=["Archivo"],
+            message="Elija el modo de cargar el archivo",
+            choices=["por Terminal", "por Archivo"],
         ),
     ]
     respuestas = inquirer.prompt(preguntas)
     if respuestas is not None:
         entrada = respuestas["opción"]
         if entrada is not None:
-            if entrada == "Archivo":
+            if entrada == "por Archivo":
                 respuesta = inquirer.prompt(
                     [
                         inquirer.Path(
                             "path",
-                            message="Ingrese la ruta hacia el archivo",
+                            message="Ingrese el directorio hacia el archivo",
                             path_type=inquirer.Path.FILE,
                             validate=validar_path,
                         ),

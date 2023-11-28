@@ -18,7 +18,7 @@ def abrir_archivo():
 
 def iniciar_simulacion():
     if hasattr(ventana, 'archivo_seleccionado') and ventana.archivo_seleccionado:
-        subprocess.run(["python", "../main.py", ventana.archivo_seleccionado])
+        subprocess.run(["python", "../code/main.py", ventana.archivo_seleccionado])
     else:
         print("Error: No se ha seleccionado un archivo.")
 
@@ -31,7 +31,7 @@ titulo = tk.Label(ventana, text="Selecciona un archivo", font=("Arial", 14))
 titulo.pack(pady=10)
 
 # Agregar una imagen
-imagen = tk.PhotoImage(file="../logo.png") 
+imagen = tk.PhotoImage(file="../code/logo.png") 
 imagen_label = tk.Label(ventana, image=imagen)
 imagen_label.pack()
 
