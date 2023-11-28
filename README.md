@@ -57,7 +57,7 @@ Modelamos el siguiente diagrama de flujo para nuestro programa:
 ## Desarrollo
 Se decidio separar el código en 6 archivos para proporcionar un desarrollo más modular del simulador:
 
-- ###  **[Inicializacion.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/Inicializacion.py)**
+- ###  **[inicializacion.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/Inicializacion.py)**
 Este archivo contiene la implementación de las clases relacionadas con la simulación, como Proceso, Particion, Procesador, y Memoria. También define funciones para cargar procesos desde un archivo CSV, gestionar la memoria, y realizar la simulación.
 
 - Clase Proceso: Representa un proceso con atributos como id, tiempo de irrupción, tiempo de arribo y tamaño.
@@ -68,7 +68,7 @@ Este archivo contiene la implementación de las clases relacionadas con la simul
 - ###  **[lector.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/lector.py)**
 Este archivo contiene funciones para leer datos desde archivos. Soporta archivos CSV y JSON. La función leer_datos decide qué tipo de archivo es y llama a la función correspondiente (csv_reader o json_reader) para procesar y devolver los datos en un formato consistente.
 
-- ###  **[Main.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/main.py)**
+- ###  **[main.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/Main.py)**
 Este es el archivo principal que ejecuta la simulación. Utiliza la funcionalidad proporcionada en otros archivos, como la carga de archivos (Prompt y leer_archivo), y la ejecución de la simulación (Run).
 
 - ###  **[ventana.py](https://github.com/Saucedo-Gonzalo/simulador-oppenheimer/blob/main/code/ventana.py)**
